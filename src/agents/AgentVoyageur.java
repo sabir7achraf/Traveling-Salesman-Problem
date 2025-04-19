@@ -1,8 +1,12 @@
 package agents;
 
 import jade.core.Agent;
+import jade.core.behaviours.CyclicBehaviour;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import util.Position;
 import util.Permutateur;
+
 import java.util.*;
 
 public class AgentVoyageur extends Agent {
@@ -11,14 +15,31 @@ public class AgentVoyageur extends Agent {
     protected void setup() {
         System.out.println("🚶 [Voyageur] Je suis prêt à résoudre le TSP !");
 
-        // Remplis les villes ici ou depuis les messages reçus
-        villes.put("Ville0", new Position(62.5, 84.85));
-        villes.put("Ville1", new Position(80.25, 33.56));
-        villes.put("Ville2", new Position(51.09, 20.14));
-        villes.put("Ville3", new Position(0.70, 27.89));
-        villes.put("Ville4", new Position(33.04, 96.13));
+        // Comportement cyclique pour recevoir les messages
+        addBehaviour(new CyclicBehaviour() {
+            @Override
+            public void action() {
+                // Attente du message contenant la liste des villes
+                MessageTemplate template = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+                ACLMessage msg = receive(template);
+                if (msg != null) {
+                    // Réception du message avec la liste des villes
+                    String contenu = msg.getContent();
+                    System.out.println("📩 [Voyageur] Reçu : " + contenu);
 
-        resoudreTSP();
+                    // Convertir les noms des villes reçues en positions
+                    List<String> nomsVilles = Arrays.asList(contenu.split(","));
+                    for (String ville : nomsVilles) {
+                        villes.put(ville, new Position(Math.random() * 100, Math.random() * 100)); // Générer des positions aléatoires
+                    }
+
+                    // Résoudre le TSP
+                    resoudreTSP();
+                } else {
+                    block(); // Attente d'un message
+                }
+            }
+        });
     }
 
     private void resoudreTSP() {

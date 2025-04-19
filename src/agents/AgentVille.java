@@ -1,21 +1,15 @@
 package agents;
 
 import jade.core.Agent;
+import util.Position;
 
 public class AgentVille extends Agent {
+    private Position position;
 
-    private double x;
-    private double y;
-
-    @Override
     protected void setup() {
-        Object[] args = getArguments();
-        if (args != null && args.length == 2) {
-            this.x = (double) args[0];
-            this.y = (double) args[1];
-            System.out.printf("🏙️ [%s] Position initiale : (%.2f, %.2f)%n", getLocalName(), x, y);
-        } else {
-            System.out.println("⚠️ [Ville] Paramètres manquants !");
-        }
+        // Générer une position aléatoire
+        this.position = new Position(Math.random() * 100, Math.random() * 100);
+
+        System.out.println("🏙️ [" + getLocalName() + "] Position : (" + position.x + ", " + position.y + ")");
     }
 }
