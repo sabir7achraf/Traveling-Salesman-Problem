@@ -3,39 +3,25 @@ package main;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
-import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
-import jade.wrapper.StaleProxyException;
+import jade.wrapper.ContainerController;
 
 public class Launcher {
     public static void main(String[] args) {
-        // Configuration du conteneur principal
-        Runtime runtime = Runtime.instance();
+        // Création de l'environnement JADE
+        Runtime rt = Runtime.instance();
         Profile profile = new ProfileImpl();
-        profile.setParameter(Profile.MAIN_HOST, "localhost");
-        profile.setParameter(Profile.MAIN_PORT, "1099");
+        profile.setParameter(Profile.MAIN, "true"); // Conteneur principal
+        profile.setParameter(Profile.GUI, "true");  // Activer l'interface graphique JADE
 
-        // Lancer la plateforme JADE
-        AgentContainer container = runtime.createMainContainer(profile);
+        // Création du conteneur principal
+        ContainerController mainContainer = rt.createMainContainer(profile);
 
         try {
-            // Lancer les agents
-            AgentController controleur = container.createNewAgent("Controleur", "agents.AgentControleur", new Object[]{});
-            AgentController voyageur = container.createNewAgent("Voyageur", "agents.AgentVoyageur", new Object[]{});
-            AgentController ville0 = container.createNewAgent("Ville0", "agents.AgentVille", new Object[]{});
-            AgentController ville1 = container.createNewAgent("Ville1", "agents.AgentVille", new Object[]{});
-            AgentController ville2 = container.createNewAgent("Ville2", "agents.AgentVille", new Object[]{});
-            AgentController ville3 = container.createNewAgent("Ville3", "agents.AgentVille", new Object[]{});
-            AgentController ville4 = container.createNewAgent("Ville4", "agents.AgentVille", new Object[]{});
-
+            // Lancement de l'agent Controleur (les autres agents seront créés par lui)
+            AgentController controleur = mainContainer.createNewAgent("Controleur", "agents.AgentControleur", null);
             controleur.start();
-            voyageur.start();
-            ville0.start();
-            ville1.start();
-            ville2.start();
-            ville3.start();
-            ville4.start();
-        } catch (StaleProxyException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
