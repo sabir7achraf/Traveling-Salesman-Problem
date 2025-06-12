@@ -28,7 +28,7 @@ public class AgentControleur extends Agent {
     protected void setup() {
         System.out.println("🟡 AgentControleur '" + getLocalName() + "' démarré.");
 
-        List<Ville> villes = chargerVillesDepuisJson("/home/mouadrguibi/SMA/Traveling-Salesman-Problem/src/resources/villes.json"); // Chemin vers votre fichier
+        List<Ville> villes = chargerVillesDepuisJson("/home/sabir7achraf/IdeaProjects/MultiAgent/src/resources/villes.json"); // Chemin vers votre fichier
 
         if (villes == null || villes.isEmpty()) {
             System.err.println("❌ Aucune ville chargée depuis le JSON. Arrêt.");
